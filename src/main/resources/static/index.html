@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Sumify.AI</title>
+
+    <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          font-family: Arial, sans-serif;
+        }
+
+        body {
+          background: #0f0f0f;
+          color: #fff;
+        }
+
+        /* NAVBAR */
+        nav {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 20px 60px;
+        }
+
+        .logo {
+          font-size: 20px;
+          font-weight: bold;
+        }
+
+        .btn-outline {
+          padding: 10px 16px;
+          border: 1px solid #444;
+          border-radius: 8px;
+          background: transparent;
+          color: white;
+          cursor: pointer;
+        }
+
+        /* HERO */
+        .hero {
+          text-align: center;
+          padding: 60px 20px 30px;
+        }
+
+        .tag {
+          display: inline-block;
+          background: #e8f5e9;
+          color: #111;
+          padding: 6px 12px;
+          border-radius: 20px;
+          font-size: 12px;
+          margin-bottom: 20px;
+        }
+
+        h1 {
+          font-size: 52px;
+          line-height: 1.2;
+          margin-bottom: 15px;
+        }
+
+        .red {
+          color: #ff4d4d;
+        }
+
+        p {
+          color: #aaa;
+          max-width: 700px;
+          margin: 0 auto 25px;
+          line-height: 1.5;
+        }
+
+        .input-group {
+          display: flex;
+          justify-content: center;
+          gap: 10px;
+          margin-top: 20px;
+        }
+
+        input {
+          padding: 12px;
+          width: 280px;
+          border-radius: 8px;
+          border: 1px solid #333;
+          background: #1a1a1a;
+          color: white;
+        }
+
+        .btn {
+          padding: 12px 18px;
+          background: white;
+          color: black;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          font-weight: bold;
+        }
+
+        .subtext {
+          font-size: 13px;
+          color: #777;
+          margin-top: 8px;
+        }
+
+        /* DEMO BOX */
+        .demo {
+          background: #141414;
+          margin: 40px auto;
+          padding: 20px;
+          width: 80%;
+          border-radius: 12px;
+          border: 1px solid #2a2a2a;
+        }
+
+        .demo-box {
+          background: #1b1b1b;
+          padding: 15px;
+          border-radius: 10px;
+          margin-top: 15px;
+          font-size: 14px;
+          color: #ccc;
+        }
+
+        .stats {
+          display: flex;
+          justify-content: center;
+          gap: 30px;
+          margin: 40px 0;
+        }
+
+        .card {
+          background: #141414;
+          padding: 20px;
+          border-radius: 12px;
+          width: 200px;
+          text-align: center;
+          border: 1px solid #2a2a2a;
+        }
+
+        .card h2 {
+          font-size: 22px;
+        }
+
+        .features {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 20px;
+          width: 80%;
+          margin: auto;
+        }
+
+        .feature {
+          background: #141414;
+          padding: 20px;
+          border-radius: 12px;
+          border: 1px solid #2a2a2a;
+        }
+
+        .waitlist {
+          text-align: center;
+          margin: 60px 0;
+        }
+
+        footer {
+          text-align: center;
+          padding: 20px;
+          color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <div class="logo">Sumify.AI</div>
+    <button class="btn-outline">Try Free</button>
+</nav>
+
+<section class="hero">
+    <div class="tag">AI-Powered Summarization</div>
+
+    <h1>
+        YouTube videos.<br/>
+        <span class="red">Understood in</span><br/>
+        30 seconds.
+    </h1>
+
+    <p>
+        Paste any YouTube URL and Sumify AI instantly generates a crisp, structured summary.
+        Save hours of passive watching — get the key ideas in seconds.
+    </p>
+
+    <div class="input-group">
+        <input type="text" placeholder="Enter your email for early access"/>
+        <button class="btn">Get Access</button>
+    </div>
+
+    <div class="subtext">500+ people already on the waitlist</div>
+</section>
+
+<section class="demo">
+    <h3>LIVE DEMO PREVIEW</h3>
+
+    <div class="demo-box">
+        ▶ youtube.com/watch?v=example — Rick Astley: Never Gonna Give You Up
+    </div>
+
+    <div class="demo-box">
+        <b>AI Summary — 3:32 video</b>
+        <ul>
+            <li>Classic 1987 pop track by Rick Astley</li>
+            <li>Theme: loyalty and commitment</li>
+            <li>Popular internet meme (“Rickrolling”)</li>
+        </ul>
+    </div>
+</section>
+
+<section class="stats">
+    <div class="card">
+        <h2>2.1s</h2>
+        <p>Avg summary time</p>
+    </div>
+
+    <div class="card">
+        <h2>10+</h2>
+        <p>Languages supported</p>
+    </div>
+
+    <div class="card">
+        <h2>98%</h2>
+        <p>Accuracy score</p>
+    </div>
+</section>
+
+<section class="features">
+    <div class="feature">
+        <h3>⚡ Instant summaries</h3>
+        <p>Get structured breakdown in seconds.</p>
+    </div>
+
+    <div class="feature">
+        <h3>📄 Key takeaways</h3>
+        <p>Bullet insights for fast reading.</p>
+    </div>
+
+    <div class="feature">
+        <h3>🌐 Multi-language</h3>
+        <p>Works even without captions.</p>
+    </div>
+
+    <div class="feature">
+        <h3>🔗 Share & export</h3>
+        <p>Copy or export in one click.</p>
+    </div>
+</section>
+
+<section class="waitlist">
+    <h2>Join the waitlist today</h2>
+    <p>Free during beta. No credit card required.</p>
+
+    <div class="input-group">
+        <input type="text" placeholder="your@email.com"/>
+        <button class="btn">Join Waitlist</button>
+    </div>
+</section>
+
+<footer>
+    © 2026 Sumify.AI — Built with AI
+</footer>
+
+</body>
+</html>
