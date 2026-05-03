@@ -1,275 +1,753 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Sumify.AI</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Briefly AI — Understand Any Document in Seconds</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
     <style>
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          font-family: Arial, sans-serif;
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+          --bg: #080c14;
+          --bg2: #0d1420;
+          --bg3: #111827;
+          --accent: #4f8ef7;
+          --accent2: #7bb3ff;
+          --text: #f0f4ff;
+          --muted: #8896b3;
+          --border: rgba(255,255,255,0.07);
+          --card: rgba(255,255,255,0.04);
+          --font-head: 'Syne', sans-serif;
+          --font-body: 'DM Sans', sans-serif;
         }
+
+        html { scroll-behavior: smooth; }
 
         body {
-          background: #0f0f0f;
-          color: #fff;
+          background: var(--bg);
+          color: var(--text);
+          font-family: var(--font-body);
+          font-size: 16px;
+          line-height: 1.7;
+          overflow-x: hidden;
         }
 
-        /* NAVBAR */
+        body::before {
+          content: '';
+          position: fixed;
+          inset: 0;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+          pointer-events: none;
+          z-index: 0;
+          opacity: 0.5;
+        }
+
         nav {
+          position: fixed;
+          top: 0; left: 0; right: 0;
+          z-index: 100;
           display: flex;
-          justify-content: space-between;
           align-items: center;
-          padding: 20px 60px;
+          justify-content: space-between;
+          padding: 20px 48px;
+          background: rgba(8,12,20,0.7);
+          backdrop-filter: blur(16px);
+          border-bottom: 1px solid var(--border);
         }
 
         .logo {
+          font-family: var(--font-head);
           font-size: 20px;
-          font-weight: bold;
+          font-weight: 800;
+          letter-spacing: -0.5px;
+          color: var(--text);
+          text-decoration: none;
         }
+        .logo span { color: var(--accent); }
 
-        .btn-outline {
-          padding: 10px 16px;
-          border: 1px solid #444;
+        .nav-links {
+          display: flex;
+          gap: 36px;
+          list-style: none;
+        }
+        .nav-links a {
+          font-size: 14px;
+          color: var(--muted);
+          text-decoration: none;
+          font-weight: 400;
+          transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--text); }
+
+        .nav-cta {
+          background: var(--accent);
+          color: #fff !important;
+          padding: 9px 20px;
           border-radius: 8px;
-          background: transparent;
-          color: white;
-          cursor: pointer;
+          font-weight: 500;
+          font-size: 14px;
+          text-decoration: none;
+          transition: opacity 0.2s, transform 0.15s;
         }
+        .nav-cta:hover { opacity: 0.88; transform: translateY(-1px); }
 
-        /* HERO */
         .hero {
+          position: relative;
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           text-align: center;
-          padding: 60px 20px 30px;
+          padding: 140px 24px 80px;
+          overflow: hidden;
         }
 
-        .tag {
-          display: inline-block;
-          background: #e8f5e9;
-          color: #111;
-          padding: 6px 12px;
-          border-radius: 20px;
-          font-size: 12px;
-          margin-bottom: 20px;
+        .blob {
+          position: absolute;
+          border-radius: 50%;
+          filter: blur(80px);
+          pointer-events: none;
+          animation: drift 10s ease-in-out infinite alternate;
         }
+        .blob-1 { width: 500px; height: 500px; background: rgba(79,142,247,0.12); top: -100px; left: -100px; }
+        .blob-2 { width: 400px; height: 400px; background: rgba(123,179,255,0.08); bottom: 0; right: -80px; animation-delay: -4s; }
+        .blob-3 { width: 300px; height: 300px; background: rgba(79,142,247,0.06); top: 40%; left: 50%; transform: translate(-50%,-50%); animation-delay: -7s; }
+
+        @keyframes drift {
+          from { transform: translate(0,0) scale(1); }
+          to   { transform: translate(30px, 20px) scale(1.05); }
+        }
+
+        .hero-inner { position: relative; z-index: 1; max-width: 760px; }
+
+        .badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          background: rgba(79,142,247,0.12);
+          border: 1px solid rgba(79,142,247,0.25);
+          color: var(--accent2);
+          font-size: 12px;
+          font-weight: 500;
+          padding: 6px 14px;
+          border-radius: 100px;
+          margin-bottom: 28px;
+          letter-spacing: 0.04em;
+          animation: fadeUp 0.6s ease both;
+        }
+        .badge-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 2s ease infinite; }
+        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
 
         h1 {
-          font-size: 52px;
-          line-height: 1.2;
-          margin-bottom: 15px;
+          font-family: var(--font-head);
+          font-size: clamp(42px, 6vw, 72px);
+          font-weight: 800;
+          line-height: 1.05;
+          letter-spacing: -2px;
+          margin-bottom: 22px;
+          animation: fadeUp 0.6s 0.1s ease both;
+        }
+        h1 em {
+          font-style: normal;
+          background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
         }
 
-        .red {
-          color: #ff4d4d;
+        .hero-sub {
+          font-size: clamp(16px, 2vw, 19px);
+          color: var(--muted);
+          max-width: 520px;
+          margin: 0 auto 40px;
+          font-weight: 300;
+          line-height: 1.6;
+          animation: fadeUp 0.6s 0.2s ease both;
         }
 
-        p {
-          color: #aaa;
-          max-width: 700px;
-          margin: 0 auto 25px;
-          line-height: 1.5;
-        }
-
-        .input-group {
+        .hero-cta {
           display: flex;
+          align-items: center;
           justify-content: center;
-          gap: 10px;
-          margin-top: 20px;
+          gap: 14px;
+          flex-wrap: wrap;
+          animation: fadeUp 0.6s 0.3s ease both;
         }
 
-        input {
-          padding: 12px;
-          width: 280px;
-          border-radius: 8px;
-          border: 1px solid #333;
-          background: #1a1a1a;
-          color: white;
-        }
-
-        .btn {
-          padding: 12px 18px;
-          background: white;
-          color: black;
+        .btn-primary {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: var(--accent);
+          color: #fff;
+          font-family: var(--font-body);
+          font-size: 16px;
+          font-weight: 500;
+          padding: 14px 28px;
           border: none;
-          border-radius: 8px;
-          cursor: pointer;
-          font-weight: bold;
-        }
-
-        .subtext {
-          font-size: 13px;
-          color: #777;
-          margin-top: 8px;
-        }
-
-        /* DEMO BOX */
-        .demo {
-          background: #141414;
-          margin: 40px auto;
-          padding: 20px;
-          width: 80%;
-          border-radius: 12px;
-          border: 1px solid #2a2a2a;
-        }
-
-        .demo-box {
-          background: #1b1b1b;
-          padding: 15px;
           border-radius: 10px;
-          margin-top: 15px;
-          font-size: 14px;
-          color: #ccc;
+          cursor: pointer;
+          text-decoration: none;
+          transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
         }
+        .btn-primary:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 30px rgba(79,142,247,0.35);
+        }
+        .btn-primary svg { width: 16px; height: 16px; }
 
-        .stats {
+        .btn-ghost {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          color: var(--muted);
+          font-size: 15px;
+          font-weight: 400;
+          text-decoration: none;
+          padding: 14px 4px;
+          transition: color 0.2s;
+        }
+        .btn-ghost:hover { color: var(--text); }
+
+        .hero-mockup {
+          position: relative;
+          margin: 64px auto 0;
+          max-width: 700px;
+          animation: fadeUp 0.8s 0.4s ease both;
+        }
+        .mockup-window {
+          background: var(--bg2);
+          border: 1px solid var(--border);
+          border-radius: 14px;
+          overflow: hidden;
+          box-shadow: 0 40px 100px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
+        }
+        .mockup-bar {
+          background: var(--bg3);
+          padding: 12px 16px;
           display: flex;
-          justify-content: center;
-          gap: 30px;
-          margin: 40px 0;
+          align-items: center;
+          gap: 6px;
+          border-bottom: 1px solid var(--border);
         }
-
-        .card {
-          background: #141414;
-          padding: 20px;
-          border-radius: 12px;
-          width: 200px;
+        .mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .mockup-dot:nth-child(1) { background: #ff5f57; }
+        .mockup-dot:nth-child(2) { background: #febc2e; }
+        .mockup-dot:nth-child(3) { background: #28c840; }
+        .mockup-url {
+          flex: 1;
+          margin-left: 10px;
+          background: rgba(255,255,255,0.05);
+          border-radius: 6px;
+          padding: 4px 12px;
+          font-size: 12px;
+          color: var(--muted);
+        }
+        .mockup-body { padding: 28px 32px; text-align: left; }
+        .upload-zone {
+          border: 1.5px dashed rgba(79,142,247,0.3);
+          border-radius: 10px;
+          padding: 32px;
           text-align: center;
-          border: 1px solid #2a2a2a;
+          margin-bottom: 24px;
+          background: rgba(79,142,247,0.04);
         }
-
-        .card h2 {
-          font-size: 22px;
-        }
-
-        .features {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 20px;
-          width: 80%;
-          margin: auto;
-        }
-
-        .feature {
-          background: #141414;
+        .upload-icon { font-size: 28px; margin-bottom: 8px; }
+        .upload-text { font-size: 14px; color: var(--muted); }
+        .upload-text strong { color: var(--accent2); font-weight: 500; }
+        .summary-card {
+          background: rgba(255,255,255,0.04);
+          border: 1px solid var(--border);
+          border-radius: 10px;
           padding: 20px;
-          border-radius: 12px;
-          border: 1px solid #2a2a2a;
+        }
+        .summary-label {
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.1em;
+          color: var(--accent);
+          text-transform: uppercase;
+          margin-bottom: 12px;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+        .summary-label::after { content: ''; flex: 1; height: 1px; background: rgba(79,142,247,0.2); }
+        .summary-line {
+          height: 10px;
+          background: rgba(255,255,255,0.07);
+          border-radius: 4px;
+          margin-bottom: 8px;
+          position: relative;
+          overflow: hidden;
+        }
+        .summary-line::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+          animation: shimmer 2s ease infinite;
+        }
+        .summary-line:nth-child(2) { width: 100%; }
+        .summary-line:nth-child(3) { width: 85%; }
+        .summary-line:nth-child(4) { width: 92%; }
+        .summary-line:nth-child(5) { width: 70%; }
+        @keyframes shimmer { from{transform:translateX(-100%)} to{transform:translateX(200%)} }
+
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to   { opacity: 1; transform: translateY(0); }
         }
 
-        .waitlist {
-          text-align: center;
-          margin: 60px 0;
+        section { position: relative; z-index: 1; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+        .section-pad { padding: 100px 0; }
+
+        .section-label {
+          font-size: 12px;
+          font-weight: 600;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: var(--accent);
+          margin-bottom: 14px;
         }
+        h2 {
+          font-family: var(--font-head);
+          font-size: clamp(30px, 4vw, 48px);
+          font-weight: 700;
+          line-height: 1.1;
+          letter-spacing: -1.5px;
+          margin-bottom: 20px;
+        }
+        .section-sub {
+          font-size: 17px;
+          color: var(--muted);
+          max-width: 520px;
+          font-weight: 300;
+          line-height: 1.65;
+        }
+
+        .problem { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+
+        .pain-list { list-style: none; margin-top: 36px; display: flex; flex-direction: column; gap: 16px; }
+        .pain-item {
+          display: flex;
+          align-items: flex-start;
+          gap: 14px;
+          padding: 18px 20px;
+          background: rgba(255,255,255,0.03);
+          border: 1px solid var(--border);
+          border-radius: 10px;
+          font-size: 15px;
+          color: var(--muted);
+          line-height: 1.5;
+          transition: border-color 0.2s, background 0.2s;
+        }
+        .pain-item:hover { border-color: rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); }
+        .pain-icon {
+          width: 32px; height: 32px; border-radius: 8px;
+          background: rgba(255,80,80,0.1);
+          display: flex; align-items: center; justify-content: center;
+          font-size: 15px; flex-shrink: 0;
+        }
+
+        .solution-card {
+          background: var(--bg3);
+          border: 1px solid var(--border);
+          border-radius: 16px;
+          padding: 36px;
+        }
+        .solution-step {
+          display: flex;
+          align-items: flex-start;
+          gap: 16px;
+          padding: 18px 0;
+          border-bottom: 1px solid var(--border);
+        }
+        .solution-step:last-child { border-bottom: none; padding-bottom: 0; }
+        .step-num {
+          width: 32px; height: 32px;
+          border-radius: 8px;
+          background: rgba(79,142,247,0.15);
+          border: 1px solid rgba(79,142,247,0.25);
+          color: var(--accent2);
+          font-size: 13px;
+          font-weight: 600;
+          display: flex; align-items: center; justify-content: center;
+          flex-shrink: 0;
+        }
+        .step-content h4 { font-family: var(--font-head); font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+        .step-content p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 56px; }
+        .feature-card {
+          background: var(--card);
+          border: 1px solid var(--border);
+          border-radius: 14px;
+          padding: 28px;
+          transition: border-color 0.25s, transform 0.25s;
+          cursor: default;
+        }
+        .feature-card:hover { border-color: rgba(79,142,247,0.3); transform: translateY(-4px); }
+        .feature-icon {
+          width: 44px; height: 44px;
+          background: rgba(79,142,247,0.1);
+          border: 1px solid rgba(79,142,247,0.2);
+          border-radius: 10px;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 20px;
+          margin-bottom: 18px;
+        }
+        .feature-title { font-family: var(--font-head); font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+        .feature-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+        .how { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        .how-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: 64px; position: relative; }
+        .how-steps::before {
+          content: '';
+          position: absolute;
+          top: 28px; left: calc(16.67% + 28px); right: calc(16.67% + 28px);
+          height: 1px;
+          background: linear-gradient(90deg, var(--accent), rgba(79,142,247,0.3));
+          pointer-events: none;
+        }
+        .how-step { text-align: center; padding: 0 24px; }
+        .how-num {
+          width: 56px; height: 56px;
+          border-radius: 50%;
+          background: var(--bg3);
+          border: 1px solid rgba(79,142,247,0.3);
+          color: var(--accent2);
+          font-family: var(--font-head);
+          font-size: 20px;
+          font-weight: 700;
+          display: flex; align-items: center; justify-content: center;
+          margin: 0 auto 20px;
+        }
+        .how-step h4 { font-family: var(--font-head); font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+        .how-step p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+        .cta-section { text-align: center; }
+        .cta-box {
+          background: var(--bg2);
+          border: 1px solid var(--border);
+          border-radius: 24px;
+          padding: 80px 40px;
+          position: relative;
+          overflow: hidden;
+        }
+        .cta-box::before {
+          content: '';
+          position: absolute;
+          top: -100px; left: 50%; transform: translateX(-50%);
+          width: 400px; height: 400px;
+          background: radial-gradient(circle, rgba(79,142,247,0.12) 0%, transparent 70%);
+          pointer-events: none;
+        }
+        .cta-box h2 { margin-bottom: 16px; position: relative; }
+        .cta-box .section-sub { margin: 0 auto 36px; position: relative; }
+        .cta-form {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          max-width: 460px;
+          margin: 0 auto;
+          position: relative;
+        }
+        .cta-input {
+          flex: 1;
+          background: rgba(255,255,255,0.06);
+          border: 1px solid var(--border);
+          border-radius: 10px;
+          padding: 13px 18px;
+          font-family: var(--font-body);
+          font-size: 15px;
+          color: var(--text);
+          outline: none;
+          transition: border-color 0.2s;
+        }
+        .cta-input::placeholder { color: var(--muted); }
+        .cta-input:focus { border-color: rgba(79,142,247,0.5); }
+        .cta-note { font-size: 13px; color: var(--muted); margin-top: 14px; position: relative; }
 
         footer {
-          text-align: center;
-          padding: 20px;
-          color: #666;
+          border-top: 1px solid var(--border);
+          padding: 36px 48px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-size: 13px;
+          color: var(--muted);
+          position: relative; z-index: 1;
+        }
+        footer a { color: var(--muted); text-decoration: none; }
+        footer a:hover { color: var(--text); }
+
+        @media (max-width: 768px) {
+          nav { padding: 16px 20px; }
+          .nav-links { display: none; }
+          h1 { letter-spacing: -1px; }
+          .problem-grid { grid-template-columns: 1fr; gap: 40px; }
+          .features-grid { grid-template-columns: 1fr; }
+          .how-steps { grid-template-columns: 1fr; gap: 32px; }
+          .how-steps::before { display: none; }
+          .cta-form { flex-direction: column; }
+          .cta-input { width: 100%; }
+          footer { flex-direction: column; gap: 12px; text-align: center; }
         }
     </style>
 </head>
-
 <body>
 
 <nav>
-    <div class="logo">Sumify.AI</div>
-    <button class="btn-outline">Try Free</button>
+    <a class="logo" href="#">briefly<span>.</span>ai</a>
+    <ul class="nav-links">
+        <li><a href="#problem">Why Briefly</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#waitlist" class="nav-cta">Join waitlist</a></li>
+    </ul>
 </nav>
 
 <section class="hero">
-    <div class="tag">AI-Powered Summarization</div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
 
-    <h1>
-        YouTube videos.<br/>
-        <span class="red">Understood in</span><br/>
-        30 seconds.
-    </h1>
+    <div class="hero-inner">
+        <div class="badge">
+            <span class="badge-dot"></span>
+            AI-powered document understanding
+        </div>
 
-    <p>
-        Paste any YouTube URL and Sumify AI instantly generates a crisp, structured summary.
-        Save hours of passive watching — get the key ideas in seconds.
-    </p>
+        <h1>Understand Any Document<br>in <em>Seconds</em></h1>
 
-    <div class="input-group">
-        <input type="text" placeholder="Enter your email for early access"/>
-        <button class="btn">Get Access</button>
-    </div>
+        <p class="hero-sub">
+            Upload any PDF, textbook, or notes — Briefly AI turns walls of text into
+            clear, simple summaries so you can study smarter, not longer.
+        </p>
 
-    <div class="subtext">500+ people already on the waitlist</div>
-</section>
+        <div class="hero-cta">
+            <a href="#waitlist" class="btn-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                Try Briefly AI free
+            </a>
+            <a href="#how" class="btn-ghost">See how it works ↓</a>
+        </div>
 
-<section class="demo">
-    <h3>LIVE DEMO PREVIEW</h3>
-
-    <div class="demo-box">
-        ▶ youtube.com/watch?v=example — Rick Astley: Never Gonna Give You Up
-    </div>
-
-    <div class="demo-box">
-        <b>AI Summary — 3:32 video</b>
-        <ul>
-            <li>Classic 1987 pop track by Rick Astley</li>
-            <li>Theme: loyalty and commitment</li>
-            <li>Popular internet meme (“Rickrolling”)</li>
-        </ul>
-    </div>
-</section>
-
-<section class="stats">
-    <div class="card">
-        <h2>2.1s</h2>
-        <p>Avg summary time</p>
-    </div>
-
-    <div class="card">
-        <h2>10+</h2>
-        <p>Languages supported</p>
-    </div>
-
-    <div class="card">
-        <h2>98%</h2>
-        <p>Accuracy score</p>
-    </div>
-</section>
-
-<section class="features">
-    <div class="feature">
-        <h3>⚡ Instant summaries</h3>
-        <p>Get structured breakdown in seconds.</p>
-    </div>
-
-    <div class="feature">
-        <h3>📄 Key takeaways</h3>
-        <p>Bullet insights for fast reading.</p>
-    </div>
-
-    <div class="feature">
-        <h3>🌐 Multi-language</h3>
-        <p>Works even without captions.</p>
-    </div>
-
-    <div class="feature">
-        <h3>🔗 Share & export</h3>
-        <p>Copy or export in one click.</p>
+        <div class="hero-mockup">
+            <div class="mockup-window">
+                <div class="mockup-bar">
+                    <div class="mockup-dot"></div>
+                    <div class="mockup-dot"></div>
+                    <div class="mockup-dot"></div>
+                    <div class="mockup-url">briefly.ai/dashboard</div>
+                </div>
+                <div class="mockup-body">
+                    <div class="upload-zone">
+                        <div class="upload-icon">📄</div>
+                        <div class="upload-text">
+                            <strong>Drop your PDF here</strong> or click to upload<br>
+                            <span style="font-size:12px">Supports PDF, DOCX, TXT</span>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">AI Summary</div>
+                        <div class="summary-line"></div>
+                        <div class="summary-line"></div>
+                        <div class="summary-line"></div>
+                        <div class="summary-line"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
-<section class="waitlist">
-    <h2>Join the waitlist today</h2>
-    <p>Free during beta. No credit card required.</p>
+<section class="problem section-pad" id="problem">
+    <div class="container">
+        <div class="problem-grid">
+            <div>
+                <div class="section-label">The problem</div>
+                <h2>Reading is slow.<br>Understanding is hard.</h2>
+                <p class="section-sub">Students spend hours on documents they barely retain. There's a better way.</p>
+                <ul class="pain-list">
+                    <li class="pain-item">
+                        <div class="pain-icon">😩</div>
+                        100-page PDFs for a single exam topic
+                    </li>
+                    <li class="pain-item">
+                        <div class="pain-icon">⏳</div>
+                        Hours wasted finding the key points
+                    </li>
+                    <li class="pain-item">
+                        <div class="pain-icon">🤯</div>
+                        Dense academic language slows you down
+                    </li>
+                </ul>
+            </div>
 
-    <div class="input-group">
-        <input type="text" placeholder="your@email.com"/>
-        <button class="btn">Join Waitlist</button>
+            <div>
+                <div class="solution-card">
+                    <div class="section-label" style="margin-bottom:20px">Briefly AI solves this</div>
+                    <div class="solution-step">
+                        <div class="step-num">01</div>
+                        <div class="step-content">
+                            <h4>Upload your document</h4>
+                            <p>PDF, DOCX, or plain text — any format works instantly.</p>
+                        </div>
+                    </div>
+                    <div class="solution-step">
+                        <div class="step-num">02</div>
+                        <div class="step-content">
+                            <h4>AI reads and understands it</h4>
+                            <p>Our model identifies the key ideas, arguments, and conclusions.</p>
+                        </div>
+                    </div>
+                    <div class="solution-step">
+                        <div class="step-num">03</div>
+                        <div class="step-content">
+                            <h4>You get a clear summary</h4>
+                            <p>Simple language. Key points. Ready to study in under 30 seconds.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-pad" id="features">
+    <div class="container">
+        <div class="section-label">Features</div>
+        <h2>Everything you need<br>to study smarter</h2>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📤</div>
+                <div class="feature-title">Upload any format</div>
+                <div class="feature-desc">PDF, DOCX, TXT — drag and drop your file and get started in seconds. No reformatting needed.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-title">Instant AI summaries</div>
+                <div class="feature-desc">Powered by state-of-the-art language models that extract meaning, not just keywords.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <div class="feature-title">Deep understanding</div>
+                <div class="feature-desc">Briefly AI doesn't just shorten text — it identifies arguments, conclusions, and key ideas.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <div class="feature-title">Clean, simple UI</div>
+                <div class="feature-desc">No clutter, no confusion. Open the app, upload, get your summary. That's it.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <div class="feature-title">Private by default</div>
+                <div class="feature-desc">Your documents are processed securely and never stored or shared with anyone.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎓</div>
+                <div class="feature-title">Built for students</div>
+                <div class="feature-desc">Designed specifically for textbooks, papers, lecture notes, and research documents.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="how section-pad" id="how">
+    <div class="container" style="text-align:center">
+        <div class="section-label">How it works</div>
+        <h2>From document to insight<br>in 3 steps</h2>
+
+        <div class="how-steps">
+            <div class="how-step">
+                <div class="how-num">1</div>
+                <h4>Upload your document</h4>
+                <p>Drag and drop any PDF or document. No account needed to get started.</p>
+            </div>
+            <div class="how-step">
+                <div class="how-num">2</div>
+                <h4>AI processes it</h4>
+                <p>Our model reads the full document and extracts what actually matters.</p>
+            </div>
+            <div class="how-step">
+                <div class="how-num">3</div>
+                <h4>Get your summary</h4>
+                <p>A clean, clear summary arrives in seconds. Copy, save, or study directly.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section section-pad" id="waitlist">
+    <div class="container">
+        <div class="cta-box">
+            <div class="section-label">Join the waitlist</div>
+            <h2>Start learning smarter today</h2>
+            <p class="section-sub">Be first to access Briefly AI. Early users get free unlimited access at launch.</p>
+
+            <form class="cta-form" onsubmit="handleSubmit(event)">
+                <input class="cta-input" type="email" placeholder="your@email.com" id="email-input" required>
+                <button type="submit" class="btn-primary" id="cta-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    Join waitlist
+                </button>
+            </form>
+            <p class="cta-note" id="cta-note">No spam. No credit card. Unsubscribe anytime.</p>
+        </div>
     </div>
 </section>
 
 <footer>
-    © 2026 Sumify.AI — Built with AI
+    <a class="logo" href="#">briefly<span style="color:var(--accent)">.</span>ai</a>
+    <span>Built by Pranatha Kukutla · 2024</span>
+    <div style="display:flex;gap:24px">
+        <a href="#">GitHub</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">Contact</a>
+    </div>
 </footer>
+
+<script>
+    function handleSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('cta-btn');
+      const note = document.getElementById('cta-note');
+      const input = document.getElementById('email-input');
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><polyline points="20 6 9 17 4 12"/></svg> You're on the list!`;
+      btn.style.background = '#16a34a';
+      btn.disabled = true;
+      input.disabled = true;
+      note.textContent = "We'll email you when Briefly AI is ready. Thank you!";
+      note.style.color = '#4ade80';
+    }
+
+    const cards = document.querySelectorAll('.feature-card, .pain-item, .how-step');
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => {
+            e.target.style.opacity = '1';
+            e.target.style.transform = 'translateY(0)';
+          }, i * 80);
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    cards.forEach(c => {
+      c.style.opacity = '0';
+      c.style.transform = 'translateY(24px)';
+      c.style.transition = 'opacity 0.5s ease, transform 0.5s ease, border-color 0.25s';
+      obs.observe(c);
+    });
+</script>
 
 </body>
 </html>
