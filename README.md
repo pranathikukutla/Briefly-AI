@@ -1,2 +1,2 @@
-# Sumify-AI
-AI-powerd study assistant that lets users upload documents and get instant simplified summaries for fast learning
+# Briefly AI
+Briefly AI is an AI-powered study assistant that allows users to upload documents and instantly generate clear, simplified summaries for faster and more effective learning.
