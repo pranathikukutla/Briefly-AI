@@ -692,14 +692,23 @@
             <h2>Start learning smarter today</h2>
             <p class="section-sub">Be first to access Briefly AI. Early users get free unlimited access at launch.</p>
 
-            <form class="cta-form" onsubmit="handleSubmit(event)">
-                <input class="cta-input" type="email" placeholder="your@email.com" id="email-input" required>
-                <button type="submit" class="btn-primary" id="cta-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    Join waitlist
-                </button>
-            </form>
-            <p class="cta-note" id="cta-note">No spam. No credit card. Unsubscribe anytime.</p>
+            <iframe data-tally-src="https://tally.so/embed/yPexk4?alignLeft=1&hideTitle=1&transparentBackground=1"
+                    loading="lazy"
+                    width="100%"
+                    height="120"
+                    frameborder="0"
+                    marginheight="0"
+                    marginwidth="0"
+                    title="Briefly AI Waitlist">
+            </iframe>
+            <script>
+                var d=document,w="https://tally.so/widgets/embed.js",
+                v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};
+                if("undefined"!=typeof Tally)v();
+                else if(d.querySelector('script[src="'+w+'"]')==null){
+                  var s=d.createElement("script");s.src=w;s.onload=v;s.onerror=v;d.body.appendChild(s);
+                }
+            </script>
         </div>
     </div>
 </section>
